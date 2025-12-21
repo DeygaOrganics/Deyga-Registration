@@ -1,4 +1,6 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+import mysql from "mysql2";
+dotenv.config();
 
 import express, { json } from "express";
 import { createConnection } from "mysql2";
@@ -9,9 +11,7 @@ app.use(cors());
 app.use(json());
 
 // MySQL connection
-const db = createConnection(
-  process.env.DATABASE_URL
-);
+const db = mysql.createConnection(process.env.DATABASE_URL);
 
 db.connect(err => {
   if (err) {
@@ -20,6 +20,8 @@ db.connect(err => {
     console.log("✅ MySQL connected");
   }
 });
+
+export default db;
 
 /* -----------------------------------
    1️⃣ Deyga Model Registration API
