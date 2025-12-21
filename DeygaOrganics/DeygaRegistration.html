@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="deyga-icon.png">
+  <title>Deyga | Model Registration</title>
+
+  <style>
+    :root {
+      --deyga-brown: #8b5a2b;
+      --deyga-green: #2e7d32;
+      --bg-cream: #faf6f1;
+      --text-dark: #2b2b2b;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Georgia", serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 14px;
+      margin-top: 12px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: var(--deyga-brown);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .success {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--deyga-green);
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    instagram-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .instagram-link a {
+      color: #c13584;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="logo">
+    <img src="deyga-logo.jpg" alt="Deyga Logo" style="max-width:160px;">
+  </div>
+
+  <h2>Model Registration</h2>
+
+  <label>Full Name</label>
+  <input type="text" id="name" placeholder="Enter your name">
+
+  <label>Mobile Number</label>
+  <input type="tel" id="mobile" placeholder="Enter mobile number">
+
+  <label>Email ID</label>
+  <input type="email" id="email" placeholder="Enter email address">
+
+  <label>Modelling Experience (Years)</label>
+  <input type="number" id="experience" min="0" placeholder="e.g. 1">
+
+  <button type="button" onclick="submitDetails()">Submit Details</button>
+
+  <div class="success" id="successMsg">
+    ✔ Details submitted successfully
+  </div>
+
+  <div class="instagram-link" style="text-align: center;">
+    <p>Continue to complete registration</p>
+    <a href="Instagram.com.html" target="_blank" onclick="instagramLogin()">Register with Instagram</a>
+  </div>
+</div>
+
+<script>
+function submitDetails() {
+  const userData = {
+    name: document.getElementById("name").value.trim(),
+    mobile: document.getElementById("mobile").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    experience: document.getElementById("experience").value.trim()
+  };
+
+  if (!userData.name || !userData.mobile || !userData.email || !userData.experience) {
+    alert("Please fill all details");
+    return;
+  }
+
+  fetch("http://localhost:3000/api/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(userData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Server error");
+    }
+    return response.json();
+  })
+  .then(() => {
+    document.getElementById("successMsg").style.display = "block";
+
+    // Optional: clear form after submit
+    document.getElementById("name").value = "";
+    document.getElementById("mobile").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("experience").value = "";
+  })
+  .catch(error => {
+    alert("Failed to submit details. Please try again.");
+    console.error(error);
+  });
+}
+</script>
+
+</body>
+</html>
