@@ -202,21 +202,23 @@ function submitInstagramDetails() {
   }
 
   fetch("https://deyga-registration.onrender.com/api/instagram-register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Server error");
-    return res.json();
-  })
-  .then(() => {
-    showDelayedSuccess(); // 👈 trigger UI flow
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Submission failed");
-  });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => {
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+  return res.json();
+})
+.then(() => {
+  showDelayedSuccess(); // your 1-minute logic
+})
+.catch(err => {
+  console.error("Fetch error:", err);
+  alert("Submission failed");
+});
 }
 </script>
 

