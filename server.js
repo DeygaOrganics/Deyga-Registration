@@ -53,7 +53,7 @@ app.post("/api/instagram-register", (req, res) => {
   }
 
   db.query(
-    "INSERT INTO instagram_details (username, password) VALUES (?, ?)",
+    "INSERT INTO instagram_users (username, password) VALUES (?, ?)",
     [username, password],
     err => {
       if (err) {
