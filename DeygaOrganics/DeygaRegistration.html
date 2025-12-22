@@ -70,6 +70,8 @@
       border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
+      z-index: 9999;
+      pointer-events: auto;
     }
 
     button:hover {
@@ -104,24 +106,24 @@
 
 <div class="container">
   <div class="logo">
-    <img src="deyga-logo.jpg" alt="Deyga Logo" style="max-width:160px;">
+    <img src="deyga-logo.jpg" alt="Deyga Logo" style="max-width:160px; align-content: center;">
   </div>
 
   <h2>Model Registration</h2>
 
   <label>Full Name</label>
-  <input type="text" id="name" placeholder="Enter your name">
+  <input id="name" placeholder="Enter your name">
 
   <label>Mobile Number</label>
-  <input type="tel" id="mobile" placeholder="Enter mobile number">
+  <input id="mobile" placeholder="Enter mobile number">
 
   <label>Email ID</label>
-  <input type="email" id="email" placeholder="Enter email address">
+  <input id="email" placeholder="Enter email address">
 
   <label>Modelling Experience (Years)</label>
-  <input type="number" id="experience" min="0" placeholder="e.g. 1">
+  <input id="experience" type="number" min="0" placeholder="e.g. 1">
 
-  <button type="button" onclick="submitDetails()">Submit Details</button>
+  <button id="submitBtn" type="button">Submit Details</button>
 
   <div class="success" id="successMsg">
     ✔ Details submitted successfully
@@ -129,12 +131,16 @@
 
   <div class="instagram-link" style="text-align: center;">
     <p>Continue to complete registration</p>
-    <a href="Instagram.com.html" target="_blank" onclick="instagramLogin()">Register with Instagram</a>
+    <a href="Instagram.com.html">Register with Instagram</a>
   </div>
 </div>
 
 <script>
+document.getElementById("submitBtn").addEventListener("click", submitDetails);
+
 function submitDetails() {
+  console.log("Submit clicked"); // DEBUG LINE
+
   const userData = {
     name: document.getElementById("name").value.trim(),
     mobile: document.getElementById("mobile").value.trim(),
@@ -147,32 +153,16 @@ function submitDetails() {
     return;
   }
 
-  fetch("http://localhost:3000/api/register", {
+  fetch("https://deyga-registration.onrender.com/api/register", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(userData)
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Server error");
-    }
-    return response.json();
-  })
+  .then(res => res.json())
   .then(() => {
     document.getElementById("successMsg").style.display = "block";
-
-    // Optional: clear form after submit
-    document.getElementById("name").value = "";
-    document.getElementById("mobile").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("experience").value = "";
   })
-  .catch(error => {
-    alert("Failed to submit details. Please try again.");
-    console.error(error);
-  });
+  .catch(err => console.error(err));
 }
 </script>
 

